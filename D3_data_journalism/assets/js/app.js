@@ -88,9 +88,9 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
     var toolTip = d3.select("body").append("div")
         .attr("class", "tooltip");
     
-    circlesGroup.on("mousover", function(d) {
+    circlesGroup.on("mousover", function(d, i) {
         toolTip.style("display", "block")
-        toolTip.html(`State: <strong>${d.state}</strong><br></br><h3>Poverty Rate: ${d.poverty}</h3><h3>Obesity Rate: ${d.obesity}`)
+        toolTip.html(`State: <strong>${d.state[i]}</strong><br></br><h3>Poverty Rate: ${d.poverty}</h3><h3>Obesity Rate: ${d.obesity}`)
         .style("left", d3.event.pageX + "px")
         .style("top", d3.event.pageY + "px");
     })
