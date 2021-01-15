@@ -5,11 +5,7 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
     // log states
     var states = stateData.map(data => data.state);
     console.log("States", states);
-    // Variables for chart
-    var obesity = stateData.map(data => data.obesity);
-    var poverty = stateData.map(data => data.poverty);
-
-
+    
     // Create svg rectangle for chart
     var margin = {top: 30, right: 30, bottom: 80, left: 80},
     width = 600 - margin.left - margin.right,
@@ -25,11 +21,11 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
 
     // Create axes
     var xScale = d3.scaleLinear()
-        .domain([0, 50])
+        .domain([0, 45])
         .range([0, width])
 
     var yScale = d3.scaleLinear()
-        .domain([0, 30])
+        .domain([0, 28])
         .range([height, 0]);
 
     svg.append("g")
@@ -39,19 +35,19 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
         .call(d3.axisLeft(yScale));
 
     // append to page
-    svg.append("g")
+    var circlesGroup = svg.append("g")
         .selectAll("dot")
         .data(stateData)
         .enter()
         .append("circle")
-            .attr("cx", function(stateData) { return xScale(stateData.obesity);})
-            .attr("cy", function(stateData) { return yScale(stateData.poverty);})
+            .attr("cx", function(d) { return xScale(d.obesity);})
+            .attr("cy", function(d) { return yScale(d.poverty);})
             .attr("r", 10)
             .attr("fill", "blue")
             .attr("opacity", ".75")
 
     // Add datapoint labels (states)
-    svg.selectAll("text")
+    svg.selectAll("dot")
         .data(stateData)
         .enter()
         .append("text")
@@ -88,5 +84,19 @@ d3.csv("assets/data/data.csv").then(function(stateData) {
         .attr("fill", "black")
         .text("Poverty (%)");
 
+    // Create tooltips
+    var toolTip = d3.select("body").append("div")
+        .attr("class", "tooltip");
+    
+    circlesGroup.on("mousover", function(d) {
+        toolTip.style("display", "block")
+        toolTip.html(`State: <strong>${d.state}</strong><br></br><h3>Poverty Rate: ${d.poverty}</h3><h3>Obesity Rate: ${d.obesity}`)
+        .style("left", d3.event.pageX + "px")
+        .style("top", d3.event.pageY + "px");
+    })
+
+    .on("mouseout", function() {
+        toolTip.style("display", "none");
+    });
     
 });
